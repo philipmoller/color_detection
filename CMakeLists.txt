@@ -108,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES anomaly_detection
-#  CATKIN_DEPENDS cv_bridge image_transport libuvc_camera opencv2 roscpp sensor_msgs std_msgs
+#  CATKIN_DEPENDS cv_bridge image_transport opencv2 roscpp sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
