@@ -96,6 +96,7 @@ void clbk_asd(const nav_msgs::Odometry::ConstPtr& asd){
   double y_pose = asd->pose.pose.position.y;
   if(anomaly){
     ROS_INFO("Anomaly detected at: x: %f, y: %f",x_pose, y_pose);
+    anomaly = false;
     return;
   }
 }
