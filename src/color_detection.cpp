@@ -6,6 +6,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <string>
 #include <math.h>
 #include <nav_msgs/Odometry.h>
 
@@ -21,6 +22,10 @@ int HighS = 255;
 int HighV = 255;
 
 bool anomaly = false;
+
+double x_pose;
+double y_pose;
+char filename[80];
 
 class ImageConverter{
  ros::NodeHandle nh_;
@@ -74,12 +79,13 @@ public:
     drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point());
   }
 
-  int largest_area = 40000; //Change value to adjust search size
+  int largest_area = 9500; //Change value to adjust search size
 
   for(int i = 0; i< contours.size(); i++ ){
     double area = contourArea(contours[i],false);
     if(area>largest_area){
-      //ROS_INFO("Mud detected!");
+      sprintf(filename,"x:%d_y:%d.png", x_pose, y_pose);
+      cv::imwrite(filename,cv_ptr->image);
       anomaly = true;
     }
   }
@@ -88,12 +94,11 @@ public:
  }
 };
 
-
 ros::Subscriber odom_sub_;
 
 void clbk_asd(const nav_msgs::Odometry::ConstPtr& asd){
-  double x_pose = asd->pose.pose.position.x;
-  double y_pose = asd->pose.pose.position.y;
+  x_pose = asd->pose.pose.position.x;
+  y_pose = asd->pose.pose.position.y;
   if(anomaly){
     ROS_INFO("Anomaly detected at: x: %f, y: %f",x_pose, y_pose);
     anomaly = false;
@@ -110,7 +115,6 @@ int main(int argc, char** argv){
  cv::createTrackbar("UpperH:", "Control", &HighH, 179, NULL);
  cv::createTrackbar("UpperS:", "Control", &HighS, 255, NULL);
  cv::createTrackbar("UpperV:", "Control", &HighV, 255, NULL);
-
  ros::init(argc, argv, "color_detection");
 
  ros::NodeHandle n;
